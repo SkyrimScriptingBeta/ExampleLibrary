@@ -1,0 +1,1 @@
+int get_example_library_value();
