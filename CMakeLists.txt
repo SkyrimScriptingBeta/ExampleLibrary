@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21)
-project(example_library VERSION 0.1.0 LANGUAGES CXX)
+project(example_library VERSION 0.0.1 LANGUAGES CXX)
 set(namespace example_library)
 
 option(BUILD_EXAMPLE "Build the example target" ON)
