@@ -4,15 +4,39 @@ set(namespace example_library)
 
 option(BUILD_EXAMPLE "Build the example target" ON)
 
-add_library(${PROJECT_NAME} INTERFACE)
-target_include_directories(${PROJECT_NAME} INTERFACE
+add_library(${PROJECT_NAME} STATIC)
+
+# Note: globbing isn't recommended, but it's used here for simplicity (and because I don't care)
+file(GLOB_RECURSE SOURCES
+  "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
+)
+
+# Make globbing update when files change by marking with CONFIGURE_DEPENDS
+file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
+  "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
+)
+
+target_sources(${PROJECT_NAME}
+  PRIVATE
+  ${SOURCES}
+)
+
+# Updated include directories for static library
+target_include_directories(${PROJECT_NAME}
+  PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
 )
 
+# Set C++23 requirement (optional)
+# target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_23)
 include(GNUInstallDirs)
+
 install(TARGETS ${PROJECT_NAME}
   EXPORT ${PROJECT_NAME}Targets
+  RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
+  LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+  ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
   INCLUDES DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
 )
 
